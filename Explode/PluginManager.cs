@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using ExplodePluginBase;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 /*
     This plugin system is based on code written by Christoph Gattnar, 
@@ -28,6 +25,7 @@ namespace Explode
     {
         // contains instances of plugins
         private List<IPluginBase> _plugins = new List<IPluginBase>();
+        private List<IFileTypeBase> _fileTypes = new List<IFileTypeBase>();
 
         public PluginManager(string directory)
         {
@@ -35,8 +33,8 @@ namespace Explode
             string[] pluginFileNames = null;
             if (Directory.Exists(directory))
             {
-               // kind of speaks for itself here
-               pluginFileNames = Directory.GetFiles(directory, "*.dll");
+                // kind of speaks for itself here
+                pluginFileNames = Directory.GetFiles(directory, "*.dll");
             }
 
             // contains all the assemblies
@@ -48,7 +46,9 @@ namespace Explode
                 Assembly assembly = Assembly.Load(an);
                 assemblies.Add(assembly);
             }
-           
+
+            #region Column plugins
+
             Type pluginType = typeof(IPluginBase);
             // contains Type objects of all the plugins
             ICollection<Type> pluginTypes = new List<Type>();
@@ -73,17 +73,61 @@ namespace Explode
                     }
                 }
             }
+
             // creates an instance of each type
             foreach (Type type in pluginTypes)
             {
-                IPluginBase plugin = (IPluginBase)Activator.CreateInstance(type);
+                IPluginBase plugin = (IPluginBase) Activator.CreateInstance(type);
                 _plugins.Add(plugin);
             }
+
+            #endregion
+
+            #region File type plugins
+
+            Type typePluginType = typeof(IFileTypeBase);
+            // contains Type objects of all the plugins
+            ICollection<Type> typePluginTypes = new List<Type>();
+            foreach (Assembly assembly in assemblies)
+            {
+                if (assembly != null)
+                {
+                    Type[] types = assembly.GetTypes();
+                    foreach (Type type in types)
+                    {
+                        if (type.IsInterface || type.IsAbstract)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            if (type.GetInterface(pluginType.FullName) != null)
+                            {
+                                pluginTypes.Add(type);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // creates an instance of each type
+            foreach (Type type in typePluginTypes)
+            {
+                IFileTypeBase plugin = (IFileTypeBase)Activator.CreateInstance(type);
+                _fileTypes.Add(plugin);
+            }
+
+            #endregion
         }
 
         public List<IPluginBase> Plugins
         {
             get { return _plugins; }
+        }
+
+        public List<IFileTypeBase> FileTypes
+        {
+            get { return _fileTypes; }
         }
     }
 }

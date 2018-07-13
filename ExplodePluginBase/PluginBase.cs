@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace ExplodePluginBase
 {
     public interface IPluginBase
     {
         string FriendlyName { get; }
+        string ColumnData(FileStream stream);
+    }
+
+    public interface IFileTypeBase
+    {
         string CheckFileType(FileStream stream);
     }
 }

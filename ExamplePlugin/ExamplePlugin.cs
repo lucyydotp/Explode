@@ -5,7 +5,7 @@ namespace FirstPlugin
 {
     public class FirstPlugin : IPluginBase
     {
-        public string CheckFileType(FileStream file)
+        public string ColumnData(FileStream file)
         {
             return file.Name;
         }
