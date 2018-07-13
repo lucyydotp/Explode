@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Explode", "Explode\Explode.csproj", "{A862357F-9905-4BC9-94B6-9ACBB74B4443}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExplodePluginBase", "ExplodePluginBase\ExplodePluginBase.csproj", "{70E8AD18-0C68-4E62-8A25-BF4FF1E209DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "ExamplePlugin\ExamplePlugin.csproj", "{2AB1E7E7-D685-465E-A48F-875DE4E202EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A862357F-9905-4BC9-94B6-9ACBB74B4443}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A862357F-9905-4BC9-94B6-9ACBB74B4443}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A862357F-9905-4BC9-94B6-9ACBB74B4443}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70E8AD18-0C68-4E62-8A25-BF4FF1E209DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70E8AD18-0C68-4E62-8A25-BF4FF1E209DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70E8AD18-0C68-4E62-8A25-BF4FF1E209DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70E8AD18-0C68-4E62-8A25-BF4FF1E209DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AB1E7E7-D685-465E-A48F-875DE4E202EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AB1E7E7-D685-465E-A48F-875DE4E202EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AB1E7E7-D685-465E-A48F-875DE4E202EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AB1E7E7-D685-465E-A48F-875DE4E202EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
