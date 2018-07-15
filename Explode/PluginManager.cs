@@ -131,6 +131,7 @@ namespace Explode
             // adds builtin types
             _fileTypes.Add(new BuiltinTxt());
             _fileTypes.Add(new BuiltinLnk());
+            _fileTypes.Add(new BuiltinExe());
 
             #endregion
         }

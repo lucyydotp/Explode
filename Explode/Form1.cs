@@ -47,7 +47,7 @@ namespace Explode
                         try
                         {
                             FileStream handle = File.OpenRead(item);
-                            listView1.Items[index].SubItems.Add(handle.Length.ToString() + " B");
+                            listView1.Items[index].SubItems.Add(getSize(handle.Length));
                             listView1.Items[index].SubItems.Add(getType(handle));
                             listView1.Items[index].SubItems.Add(Path.GetExtension(handle.Name));
                             handle.Close();
@@ -59,7 +59,7 @@ namespace Explode
                             {
                                 listView1.Items[index].SubItems.Add("");
                                 listView1.Items[index].SubItems.Add("Folder");
-                                listView1.Items[index].SubItems.Add(Path.GetExtension(item));
+                                listView1.Items[index].SubItems.Add("");
                             }
                         }
                         catch (Exception e)
@@ -105,6 +105,17 @@ namespace Explode
                     }
                 }
             }
+        }
+
+        private string getSize(long byteCount)
+        {
+            string[] suf = { " B", " KB", " MB", " GB", " TB", " PB", " EB" };
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1000)));
+            double num = Math.Round(bytes / Math.Pow(1000, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
 
     private string getType(FileStream file)

@@ -58,12 +58,12 @@ namespace Explode
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.ItemActivate += new EventHandler(listView1_ItemActivate);
+            this.listView1.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
             // 
             // columnName
             // 
             this.columnName.Text = "Name";
-            this.columnName.Width = 100;
+            this.columnName.Width = 150;
             // 
             // columnSize
             // 
@@ -72,6 +72,7 @@ namespace Explode
             // columnType
             // 
             this.columnType.Text = "Format";
+            this.columnType.Width = 150;
             // 
             // columnExtension
             // 
@@ -84,7 +85,7 @@ namespace Explode
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(790, 20);
             this.textBox1.TabIndex = 2;
-            this.textBox1.KeyPress += new KeyPressEventHandler(this.textBox1_KeyPress);
+            this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
             // tableLayoutPanel1
             // 
