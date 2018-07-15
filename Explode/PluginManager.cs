@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using ExplodePluginBase;
 
 /*
@@ -117,9 +118,15 @@ namespace Explode
                 _fileTypes.Add(plugin);
             }
 
+
+            // adds builtin types
+            _fileTypes.Add(new BuiltinTxt());
+            _fileTypes.Add(new BuiltinLnk());
+
             #endregion
         }
 
+        // these make sure that the plugin lists can't be edited
         public List<IPluginBase> Plugins
         {
             get { return _plugins; }

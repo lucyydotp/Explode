@@ -11,5 +11,6 @@ namespace ExplodePluginBase
     public interface IFileTypeBase
     {
         string CheckFileType(FileStream stream);
+        int ExecuteFile(FileStream stream);
     }
 }

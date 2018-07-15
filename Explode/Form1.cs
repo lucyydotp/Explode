@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Windows.Forms;
 using ExplodePluginBase;
 
@@ -10,10 +11,10 @@ namespace Explode
         public Form1()
         {
             InitializeComponent();
-            CurrentDirectory = "C:/";
+            CurrentDirectory = "C:/Users";
         }
 
-        // Creates a new plugin manager system and loads plugin
+        // Creates a new plugin manager system and loads plugins
         PluginManager manager = new PluginManager(Directory.GetCurrentDirectory());
         private string directory;
 
@@ -35,19 +36,35 @@ namespace Explode
                     {
                         directory = value.Replace("\\", "/");
                     }
+
                     // update the UI with the new directory
-                    listView1.Clear();
+                    listView1.Items.Clear();
                     textBox1.Text = directory;
                     int index = 0;
                     foreach (string item in Directory.GetFileSystemEntries(directory))
                     {
-                        listView1.Items.Add(item);
+                        listView1.Items.Add(item.Replace(CurrentDirectory, ""));
                         try
                         {
-                            listView1.Items[index].SubItems.Add(getType(File.OpenRead(item)));
-                        } catch (Exception e)
+                            FileStream handle = File.OpenRead(item);
+                            listView1.Items[index].SubItems.Add(handle.Length.ToString() + " B");
+                            listView1.Items[index].SubItems.Add(getType(handle));
+                            listView1.Items[index].SubItems.Add(Path.GetExtension(handle.Name));
+                            handle.Close();
+                        }
+                        // this happens if it's a directory or can't be accessed
+                        catch (UnauthorizedAccessException e)
                         {
-                            listView1.Items[index].SubItems.Add("Error");
+                            if (Directory.Exists(item))
+                            {
+                                listView1.Items[index].SubItems.Add("");
+                                listView1.Items[index].SubItems.Add("Folder");
+                                listView1.Items[index].SubItems.Add(Path.GetExtension(item));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
                         }
 
                         index++;
@@ -57,14 +74,49 @@ namespace Explode
             }
         }
 
-        private string getType(FileStream file)
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) Keys.Enter)
+            {
+                CurrentDirectory = textBox1.Text;
+            }
+        }
+
+        private void listView1_ItemActivate(object sender, EventArgs e)
+        {
+            ListViewItem selectedItem = listView1.SelectedItems[0];
+            if (Directory.Exists(CurrentDirectory + selectedItem.Text))
+            {
+                CurrentDirectory += selectedItem.Text;
+            }
+            else
+            {
+                foreach (IFileTypeBase type in manager.FileTypes)
+                {
+                    FileStream file = File.OpenRead(CurrentDirectory + selectedItem.Text);
+                    if (type.CheckFileType(file) != null)
+                    {
+                        if (type.ExecuteFile(file) == 0)
+                        {
+                            System.Diagnostics.Process.Start(file.Name);
+                        }
+                        file.Close();
+                        break;
+                    }
+                }
+            }
+        }
+
+    private string getType(FileStream file)
         {
             string data = "Unknown type";
             foreach (IFileTypeBase plugin in manager.FileTypes)
-            { 
-                if (plugin.CheckFileType(file) != null)
+            {
+                string checkFileType = plugin.CheckFileType(file);
+                if (checkFileType != null)
                 {
-                    data = plugin.CheckFileType(file);
+                    data = checkFileType;
+                    break;
                 }
             }
 
