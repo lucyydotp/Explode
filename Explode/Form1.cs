@@ -112,6 +112,7 @@ namespace Explode
             string data = "Unknown type";
             foreach (IFileTypeBase plugin in manager.FileTypes)
             {
+                file.Position = 0;
                 string checkFileType = plugin.CheckFileType(file);
                 if (checkFileType != null)
                 {

@@ -35,6 +35,8 @@ namespace Explode
             if (Directory.Exists(directory))
             {
                 // kind of speaks for itself here
+
+
                 pluginFileNames = Directory.GetFiles(directory, "*.dll");
             }
 
@@ -66,9 +68,13 @@ namespace Explode
                         }
                         else
                         {
-                            if (type.GetInterface(pluginType.FullName) != null)
+                            Type _interface = type.GetInterface("IPluginBase");
+                            if (_interface != null)
                             {
-                                pluginTypes.Add(type);
+                                if (_interface.Name == "IPluginBase")
+                                {
+                                    pluginTypes.Add(type);
+                                }
                             }
                         }
                     }
@@ -86,7 +92,6 @@ namespace Explode
 
             #region File type plugins
 
-            Type typePluginType = typeof(IFileTypeBase);
             // contains Type objects of all the plugins
             ICollection<Type> typePluginTypes = new List<Type>();
             foreach (Assembly assembly in assemblies)
@@ -102,9 +107,13 @@ namespace Explode
                         }
                         else
                         {
-                            if (type.GetInterface(pluginType.FullName) != null)
+                            Type _interface = type.GetInterface("IFileTypeBase");
+                            if (_interface != null)
                             {
-                                pluginTypes.Add(type);
+                                if (_interface.Name == "IFileTypeBase")
+                                {
+                                    typePluginTypes.Add(type);
+                                }
                             }
                         }
                     }
