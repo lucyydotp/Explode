@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 using ExplodePluginBase;
 
@@ -19,7 +20,7 @@ namespace Explode
         private string directory;
 
         // this property controls directory changes and input validation
-        private string CurrentDirectory
+        public string CurrentDirectory
         {
             get { return directory; }
             set
@@ -37,43 +38,17 @@ namespace Explode
                         directory = value.Replace("\\", "/");
                     }
 
-                    // update the UI with the new directory
-                    listView1.Items.Clear();
-                    textBox1.Text = directory;
-                    int index = 0;
-                    foreach (string item in Directory.GetFileSystemEntries(directory))
+                    new Thread(() =>
                     {
-                        listView1.Items.Add(item.Replace(CurrentDirectory, ""));
-                        try
-                        {
-                            FileStream handle = File.OpenRead(item);
-                            listView1.Items[index].SubItems.Add(getSize(handle.Length));
-                            listView1.Items[index].SubItems.Add(getType(handle));
-                            listView1.Items[index].SubItems.Add(Path.GetExtension(handle.Name));
-                            handle.Close();
-                        }
-                        // this happens if it's a directory or can't be accessed
-                        catch (UnauthorizedAccessException e)
-                        {
-                            if (Directory.Exists(item))
-                            {
-                                listView1.Items[index].SubItems.Add("");
-                                listView1.Items[index].SubItems.Add("Folder");
-                                listView1.Items[index].SubItems.Add("");
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            continue;
-                        }
-
-                        index++;
-                    }
+                        Thread.CurrentThread.IsBackground = true;
+                        FileUpdateHandler.UpdateUI(this);
+                    }).Start();
 
                 }
             }
         }
 
+        
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char) Keys.Enter)
@@ -107,7 +82,7 @@ namespace Explode
             }
         }
 
-        private string getSize(long byteCount)
+        public string getSize(long byteCount)
         {
             string[] suf = { " B", " KB", " MB", " GB", " TB", " PB", " EB" };
             if (byteCount == 0)
@@ -118,7 +93,7 @@ namespace Explode
             return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
 
-    private string getType(FileStream file)
+    public string getType(FileStream file)
         {
             string data = "Unknown type";
             foreach (IFileTypeBase plugin in manager.FileTypes)
