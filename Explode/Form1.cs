@@ -28,6 +28,15 @@ namespace Explode
                 // makes sure the new folder actually exists
                 if (Directory.Exists(value))
                 {
+                    //verify the user has sufficient access to the directory
+                    //this will trigger on certain special pointer directories (ie. legacy symlinks like Application Data)
+                    try {
+                        Directory.GetFileSystemEntries(value);
+                    } catch (UnauthorizedAccessException) {
+                        MessageBox.Show("You don't have permission to access this directory.", "Unauthorized Access", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     // if it doesn't end with a /, add one
                     if (value.Replace("\\", "/").EndsWith("/") == false)
                     {
