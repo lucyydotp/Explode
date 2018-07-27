@@ -12,7 +12,6 @@ namespace Explode
         public Form1()
         {
             InitializeComponent();
-            CurrentDirectory = "C:/Users";
         }
 
         // Creates a new plugin manager system and loads plugins
@@ -117,6 +116,10 @@ namespace Explode
             }
 
             return data;
+        }
+
+        private void Form1_Load(object sender, EventArgs e) {
+            CurrentDirectory = "C:/Users";
         }
     }
 }
