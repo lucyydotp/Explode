@@ -12,7 +12,6 @@ namespace Explode
         public Form1()
         {
             InitializeComponent();
-            CurrentDirectory = "C:/Users";
         }
 
         // Creates a new plugin manager system and loads plugins
@@ -28,6 +27,15 @@ namespace Explode
                 // makes sure the new folder actually exists
                 if (Directory.Exists(value))
                 {
+                    //verify the user has sufficient access to the directory
+                    //this will trigger on certain special pointer directories (ie. legacy symlinks like Application Data)
+                    try {
+                        Directory.GetFileSystemEntries(value);
+                    } catch (UnauthorizedAccessException) {
+                        MessageBox.Show("You don't have permission to access this directory.", "Unauthorized Access", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
                     // if it doesn't end with a /, add one
                     if (value.Replace("\\", "/").EndsWith("/") == false)
                     {
@@ -108,6 +116,10 @@ namespace Explode
             }
 
             return data;
+        }
+
+        private void Form1_Load(object sender, EventArgs e) {
+            CurrentDirectory = "C:/Users";
         }
     }
 }
