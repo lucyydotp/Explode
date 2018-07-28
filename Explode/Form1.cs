@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using ExplodePluginBase;
@@ -18,6 +19,7 @@ namespace Explode
         // Creates a new plugin manager system and loads plugins
         PluginManager manager = new PluginManager(Directory.GetCurrentDirectory());
         private string directory;
+        private List<string> undoHistory = new List<string>();
 
         // this property controls directory changes and input validation
         public string CurrentDirectory
@@ -37,7 +39,7 @@ namespace Explode
                     {
                         directory = value.Replace("\\", "/");
                     }
-
+                    undoHistory.Add(directory);
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
@@ -108,6 +110,11 @@ namespace Explode
             }
 
             return data;
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
