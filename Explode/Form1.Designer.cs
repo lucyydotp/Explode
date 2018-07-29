@@ -32,10 +32,6 @@ namespace Explode
         private void InitializeComponent()
         {
             this.listView1 = new System.Windows.Forms.ListView();
-            this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnSize = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnExtension = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -52,11 +48,6 @@ namespace Explode
             // listView1
             // 
             this.listView1.BackColor = System.Drawing.SystemColors.Window;
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnName,
-            this.columnSize,
-            this.columnType,
-            this.columnExtension});
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
@@ -67,24 +58,6 @@ namespace Explode
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
-            // 
-            // columnName
-            // 
-            this.columnName.Text = "Name";
-            this.columnName.Width = 150;
-            // 
-            // columnSize
-            // 
-            this.columnSize.Text = "Size";
-            // 
-            // columnType
-            // 
-            this.columnType.Text = "Format";
-            this.columnType.Width = 150;
-            // 
-            // columnExtension
-            // 
-            this.columnExtension.Text = "Extension";
             // 
             // tableLayoutPanel1
             // 
@@ -139,6 +112,7 @@ namespace Explode
             this.undoButton.Text = "↑";
             this.undoButton.UseVisualStyleBackColor = true;
             this.undoButton.Click += new System.EventHandler(this.GoBack);
+            // 
             // textBox1
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -170,10 +144,6 @@ namespace Explode
 
         #endregion
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.ColumnHeader columnName;
-        private System.Windows.Forms.ColumnHeader columnSize;
-        private System.Windows.Forms.ColumnHeader columnType;
-        private System.Windows.Forms.ColumnHeader columnExtension;
         public ListView listView1;
         private Panel panel1;
         private SplitContainer splitContainer1;

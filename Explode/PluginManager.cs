@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using ExplodePluginBase;
 
 /*
@@ -25,10 +26,10 @@ namespace Explode
     public class PluginManager
     {
         // contains instances of plugins
-        private List<IPluginBase> _plugins = new List<IPluginBase>();
+        // there isn't one for column plugins because they're added straight into the ListView
         private List<IFileTypeBase> _fileTypes = new List<IFileTypeBase>();
 
-        public PluginManager(string directory)
+        public PluginManager(string directory, ListView listView)
         {
             // plugin file names in here
             string[] pluginFileNames = null;
@@ -51,8 +52,6 @@ namespace Explode
             }
 
             #region Column plugins
-
-            Type pluginType = typeof(IPluginBase);
             // contains Type objects of all the plugins
             ICollection<Type> pluginTypes = new List<Type>();
             foreach (Assembly assembly in assemblies)
@@ -81,11 +80,16 @@ namespace Explode
                 }
             }
 
-            // creates an instance of each type
+            // inserts builtin plugins
+            listView.Columns.Add(new ExplodeColumn(new BuiltinName()));
+            listView.Columns.Add(new ExplodeColumn(new BuiltinSize()));
+            listView.Columns.Add(new ExplodeColumn(new BuiltinFormat()));
+            listView.Columns.Add(new ExplodeColumn(new BuiltinExtension()));
+
+            // creates an instance of each type and inserts it into the ListView
             foreach (Type type in pluginTypes)
             {
-                IPluginBase plugin = (IPluginBase) Activator.CreateInstance(type);
-                _plugins.Add(plugin);
+                listView.Columns.Add(new ExplodeColumn((IPluginBase)Activator.CreateInstance(type)));
             }
 
             #endregion
@@ -136,15 +140,27 @@ namespace Explode
             #endregion
         }
 
-        // these make sure that the plugin lists can't be edited
-        public List<IPluginBase> Plugins
-        {
-            get { return _plugins; }
-        }
+        // this makes sure that the plugin list can't be edited
 
         public List<IFileTypeBase> FileTypes
         {
             get { return _fileTypes; }
+        }
+    }
+
+    // this class is used to pair plugins with column headers 
+    public class ExplodeColumn : ColumnHeader
+    {
+        private IPluginBase handler;
+        public ExplodeColumn(IPluginBase handler)
+        {
+            this.handler = handler;
+            Text = handler.FriendlyName;
+        }
+
+        public string GetInfo(FileStream s)
+        {
+            return handler.ColumnData(s);
         }
     }
 }

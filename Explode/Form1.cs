@@ -10,15 +10,21 @@ namespace Explode
 {
     public partial class Form1 : Form
     {
+        // Creates a new plugin manager system and loads plugins
+        public PluginManager manager;
+        private string directory;
+        private List<string> pathHistory = new List<string>();
+
         public Form1()
         {
             InitializeComponent();
+            manager = new PluginManager(Directory.GetCurrentDirectory(), listView1);
         }
 
-        // Creates a new plugin manager system and loads plugins
-        PluginManager manager = new PluginManager(Directory.GetCurrentDirectory());
-        private string directory;
-        private List<string> pathHistory = new List<string>();
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            CurrentDirectory = "C:/Users";
+        }
 
         // this property controls directory changes and input validation
         public string CurrentDirectory
@@ -76,9 +82,10 @@ namespace Explode
             }
             else
             {
+                // execute the file using plugins, if defined
+                FileStream file = File.OpenRead(CurrentDirectory + selectedItem.Text);
                 foreach (IFileTypeBase type in manager.FileTypes)
-                {
-                    FileStream file = File.OpenRead(CurrentDirectory + selectedItem.Text);
+                {                    
                     if (type.CheckFileType(file) != null)
                     {
                         if (type.ExecuteFile(file) == 0)
@@ -89,36 +96,16 @@ namespace Explode
                         break;
                     }
                 }
-            }
-        }
 
-        public string getSize(long byteCount)
-        {
-            string[] suf = { " B", " KB", " MB", " GB", " TB", " PB", " EB" };
-            if (byteCount == 0)
-                return "0" + suf[0];
-            long bytes = Math.Abs(byteCount);
-            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1000)));
-            double num = Math.Round(bytes / Math.Pow(1000, place), 1);
-            return (Math.Sign(byteCount) * num).ToString() + suf[place];
-        }
-
-        public string getType(FileStream file)
-        {
-            string data = "Unknown type";
-            foreach (IFileTypeBase plugin in manager.FileTypes)
-            {
-                file.Position = 0;
-                string checkFileType = plugin.CheckFileType(file);
-                if (checkFileType != null)
+                if (file.CanRead)
                 {
-                    data = checkFileType;
-                    break;
+                    // this happens if a file type has no plugin to control it
+                    System.Diagnostics.Process.Start(file.Name);
                 }
             }
 
-            return data;
         }
+
 
         // called when back button pressed
         private void GoBack(object sender, EventArgs e)
@@ -135,10 +122,6 @@ namespace Explode
                 // this means that we've reached the root
                 MessageBox.Show("You've reached the end of your back history.", "No more to undo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-    }
-
-        private void Form1_Load(object sender, EventArgs e) {
-            CurrentDirectory = "C:/Users";
         }
     }
 }

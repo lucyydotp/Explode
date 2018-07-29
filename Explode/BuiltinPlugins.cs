@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using Explode;
 using ExplodePluginBase;
 
@@ -72,6 +73,79 @@ namespace Explode
         public int ExecuteFile(FileStream f)
         {
             return 0;
+        }
+    }
+
+    // Builtin columns
+
+    public class BuiltinName : IPluginBase
+    {
+        public string FriendlyName
+        {
+            get { return "Name"; }
+        }
+
+        public string ColumnData(FileStream s)
+        {
+            return Path.GetFileName(s.Name);
+        }
+    }
+
+    public class BuiltinSize : IPluginBase
+    {
+        public string FriendlyName
+        {
+            get { return "Size"; }
+        }
+
+        public string ColumnData(FileStream s)
+        {
+            long byteCount = s.Length;
+            string[] suf = { " B", " KB", " MB", " GB", " TB", " PB", " EB" };
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1000)));
+            double num = Math.Round(bytes / Math.Pow(1000, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
+        }
+    }
+
+    public class BuiltinFormat : IPluginBase
+    {
+        public string FriendlyName
+        {
+            get { return "Format"; }
+        }
+
+        public string ColumnData(FileStream s)
+        {
+            string data = "Unknown type";
+            foreach (IFileTypeBase plugin in Program.app.manager.FileTypes)
+            {
+                s.Position = 0;
+                string checkFileType = plugin.CheckFileType(s);
+                if (checkFileType != null)
+                {
+                    data = checkFileType;
+                    break;
+                }
+            }
+
+            return data;
+        }
+    }
+
+    public class BuiltinExtension : IPluginBase
+    {
+        public string FriendlyName
+        {
+            get { return "Extension"; }
+        }
+
+        public string ColumnData(FileStream s)
+        {
+            return Path.GetExtension(s.Name);
         }
     }
 }

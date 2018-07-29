@@ -21,24 +21,37 @@ namespace Explode
                 try
                 {
                     FileStream handle = File.OpenRead(item);
-                    target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add(target.getSize(handle.Length))));
-                    target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add(target.getType(handle))));
-                    target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add(Path.GetExtension(handle.Name))));
+
+                    foreach (ExplodeColumn column in target.listView1.Columns)
+                    {
+                        if (column.Text != "Name")
+                        {
+                            target.Invoke(new Action(() =>
+                                target.listView1.Items[index].SubItems.Add(column.GetInfo(handle))));
+                        }
+                    }
+
                     handle.Close();
                 }
                 // this happens if it's a directory or can't be accessed
                 catch (UnauthorizedAccessException e)
                 {
-                    if (Directory.Exists(item))
+                    int length = 0;
+                    target.Invoke(new Action(() => length = target.listView1.Items[index].SubItems.Count));
+                    for (int x = 1; x == length; x++)
                     {
-                        target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add("")));
-                        target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add("Folder")));
                         target.Invoke(new Action(() => target.listView1.Items[index].SubItems.Add("")));
                     }
                 }
+                // this means that it's trying to process the name column, which we can ignore
+                catch (InvalidCastException e)
+                {
+                    ;
+                }
+                // I know that this is bad practice but let's do it anyway
                 catch (Exception e)
                 {
-                    continue;
+                    ;
                 }
 
                 index++;
