@@ -18,7 +18,7 @@ namespace Explode
         // Creates a new plugin manager system and loads plugins
         PluginManager manager = new PluginManager(Directory.GetCurrentDirectory());
         private string directory;
-        private List<string> undoHistory = new List<string>();
+        private List<string> pathHistory = new List<string>();
 
         // this property controls directory changes and input validation
         public string CurrentDirectory
@@ -47,7 +47,7 @@ namespace Explode
                     {
                         directory = value.Replace("\\", "/");
                     }
-                    undoHistory.Add(directory);
+                    pathHistory.Add(directory);
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
@@ -103,7 +103,7 @@ namespace Explode
             return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
 
-    public string getType(FileStream file)
+        public string getType(FileStream file)
         {
             string data = "Unknown type";
             foreach (IFileTypeBase plugin in manager.FileTypes)
@@ -119,6 +119,23 @@ namespace Explode
 
             return data;
         }
+
+        // called when back button pressed
+        private void GoBack(object sender, EventArgs e)
+        {
+            // makes sure there is a path to go back to
+            if (pathHistory.Count > 1)
+            {
+                CurrentDirectory = pathHistory[pathHistory.Count - 2];
+                // since setting CurrentDirectory adds to the undo history, we need to remove the entry
+                pathHistory.RemoveRange(pathHistory.Count - 2, 2);
+            }
+            else
+            {
+                // this means that we've reached the root
+                MessageBox.Show("You've reached the end of your back history.", "No more to undo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+    }
 
         private void Form1_Load(object sender, EventArgs e) {
             CurrentDirectory = "C:/Users";

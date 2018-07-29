@@ -3,5 +3,5 @@ Explode is a file explorer, designed to be small, lightweight, and straightforwa
 
 ### Known issues:
 * \*Plugin system hasn't been implemented yet, but file type recognition is working ok
-* Some random crashes when opening folders - this needs investigating further
-* No back button. This is coming soon.
+
+For more information on the plugin system, please see the wiki.

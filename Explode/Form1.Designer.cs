@@ -138,7 +138,7 @@ namespace Explode
             this.undoButton.TabIndex = 3;
             this.undoButton.Text = "↑";
             this.undoButton.UseVisualStyleBackColor = true;
-            // 
+            this.undoButton.Click += new System.EventHandler(this.GoBack);
             // textBox1
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
