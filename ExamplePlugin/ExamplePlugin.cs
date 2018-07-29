@@ -1,18 +1,20 @@
 ﻿using System.IO;
 using ExplodePluginBase;
 
-namespace FirstPlugin
+namespace ExamplePlugin
 {
-    public class FirstPlugin : IPluginBase
+    public class ExamplePlugin : IPluginBase
     {
         public string ColumnData(FileStream file)
         {
-            return file.Name;
+            char[] buffer = new char[4];
+            new StreamReader(file).Read(buffer,0,4);
+            return new string(buffer);
         }
 
         public string FriendlyName
         {
-            get { return "Example Plugin"; }
+            get { return "First 4"; }
         }
     }
 }
