@@ -1,2 +1,9 @@
 language: csharp
 solution: Explode.sln
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/ff280c1ab09a710c4e7f
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
