@@ -101,6 +101,7 @@ namespace Explode
                 {
                     // this happens if a file type has no plugin to control it
                     System.Diagnostics.Process.Start(file.Name);
+                    file.Close();
                 }
             }
 
