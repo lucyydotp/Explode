@@ -19,6 +19,9 @@ namespace Explode
         {
             InitializeComponent();
             manager = new PluginManager(Directory.GetCurrentDirectory(), listView1);
+
+            FormMain frm = new FormMain();
+            frm.Show();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,7 +60,7 @@ namespace Explode
                     new Thread(() =>
                     {
                         Thread.CurrentThread.IsBackground = true;
-                        FileUpdateHandler.UpdateUI(this);
+                        //FileUpdateHandler.UpdateUI(this);
                     }).Start();
 
                 }

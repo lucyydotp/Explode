@@ -9,14 +9,14 @@ namespace Explode
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        public static Form1 app;
+        public static FormMain app;
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             // declaring like this helps with debugging
-            app = new Form1();
+            app = new FormMain();
             Application.Run(app);
         }
     }
