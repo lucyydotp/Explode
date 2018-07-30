@@ -15,6 +15,9 @@ namespace Explode
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Utilities.IconCacher.CacheAllIcons(ref FileUpdateHandler.iconCache);
+
             // declaring like this helps with debugging
             app = new FormMain();
             Application.Run(app);

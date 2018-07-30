@@ -11,7 +11,7 @@ namespace Explode
     static class FileUpdateHandler
     {
 
-        private static Dictionary<string, System.Drawing.Icon> iconCache = new Dictionary<string, System.Drawing.Icon>();
+        public static Dictionary<string, System.Drawing.Icon> iconCache = new Dictionary<string, System.Drawing.Icon>();
 
         public static void UpdateUI(FormMain target)
         {
@@ -29,31 +29,45 @@ namespace Explode
             List<string> paths = new List<string>();
             paths.AddRange(Directory.GetDirectories(target.CurrentDirectory));
             paths.AddRange(Directory.GetFiles(target.CurrentDirectory));
-            paths.AddRange(Directory.GetFileSystemEntries(target.CurrentDirectory).Except(paths));
+            //paths.AddRange(Directory.GetFileSystemEntries(target.CurrentDirectory).Except(paths));
 
             ListView _lv = new ListView();
             ImageList icons = new ImageList();
+            List<string> fileTypes = new List<string>();
             icons.ColorDepth = ColorDepth.Depth32Bit;
             ListView.ListViewItemCollection items = new ListView.ListViewItemCollection(_lv);
+
+            string ext;
+            int pos;
 
             foreach (string item in paths)
             {
                 //Grab the icon associated with the filetype/directory and add it to the directory image list. Then add the related item to the file listing
+                
+                //if its a file, get it's extension, otherwise use a character that cannot be in file names to represent directories.
+                if (File.Exists(item)) ext = new FileInfo(item).Extension;
+                else ext = "|";
 
-                try {
+                //try to get the index of the file extension in the list of filetypes found in the current directory. this will return -1 if the extension is not on the list.
+                pos = fileTypes.IndexOf(ext);
 
-                    if (File.Exists(item)) icons.Images.Add(iconCache[new FileInfo(item).Extension]);
-                    else icons.Images.Add(iconCache["|"]); // | cannot be put into filenames, therefore it is a safe unique char for directories
+                //if the extension isnt on the list, set the pos, add it, then try to add the icon to the image list
+                if (pos == -1) {
+                    pos = icons.Images.Count;
+                    fileTypes.Add(ext);
+                    try {
+                        icons.Images.Add(iconCache[ext]);
+                    } catch (KeyNotFoundException) {
+                        //if the icon is not in the icon cache, add it and then retry adding to the image list
+                        if (ext != "|") iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext, Etier.IconHelper.IconReader.IconSize.Small, false);
+                        else iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(Etier.IconHelper.IconReader.IconSize.Small, Etier.IconHelper.IconReader.FolderType.Closed);
 
-                } catch (KeyNotFoundException) {
-                    if (File.Exists(item)) iconCache[new FileInfo(item).Extension] = Etier.IconHelper.IconReader.GetFileIcon(item, Etier.IconHelper.IconReader.IconSize.Small, false);
-                    else iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(Etier.IconHelper.IconReader.IconSize.Small, Etier.IconHelper.IconReader.FolderType.Closed);
-
-                    if (File.Exists(item)) icons.Images.Add(iconCache[new FileInfo(item).Extension]);
-                    else icons.Images.Add(iconCache["|"]); // | cannot be put into filenames, therefore it is a safe unique char for directories
+                        icons.Images.Add(iconCache[ext]);
+                    }
                 }
 
-                items.Add(item.Replace(target.CurrentDirectory, ""), icons.Images.Count - 1);
+                //finally, add the entry for the item with the pos set to the index for the relevantr icon
+                items.Add(item.Replace(target.CurrentDirectory, ""), pos);
 
                 try
                 {
