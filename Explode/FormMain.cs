@@ -134,8 +134,17 @@ namespace Explode {
             }).Start();
         }
 
-        private void btnGoUp_Click(object sender, EventArgs e) {
-            CurrentDirectory = new DirectoryInfo(CurrentDirectory).Parent.FullName;
+        private void btnGoUp_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CurrentDirectory = new DirectoryInfo(CurrentDirectory).Parent.FullName;
+            }
+            catch (NullReferenceException)
+            {
+                // probably means that we're at the root dir, so we can do nothing
+                ;
+            }
         }
     }
 }

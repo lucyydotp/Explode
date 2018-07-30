@@ -29,9 +29,9 @@
             this.btnBack = new System.Windows.Forms.Button();
             this.spltViewers = new System.Windows.Forms.SplitContainer();
             this.lstQuickAccess = new System.Windows.Forms.ListView();
-            this.lstFiles = new System.Windows.Forms.ListView();
-            this.qa_Column1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.qa_Column0 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.qa_Column1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lstFiles = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.spltViewers)).BeginInit();
@@ -134,6 +134,16 @@
             this.lstQuickAccess.UseCompatibleStateImageBehavior = false;
             this.lstQuickAccess.View = System.Windows.Forms.View.Details;
             // 
+            // qa_Column0
+            // 
+            this.qa_Column0.Text = "";
+            this.qa_Column0.Width = 20;
+            // 
+            // qa_Column1
+            // 
+            this.qa_Column1.Text = "";
+            this.qa_Column1.Width = 181;
+            // 
             // lstFiles
             // 
             this.lstFiles.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -145,16 +155,6 @@
             this.lstFiles.UseCompatibleStateImageBehavior = false;
             this.lstFiles.View = System.Windows.Forms.View.Details;
             this.lstFiles.ItemActivate += new System.EventHandler(this.lstFiles_ItemActivate);
-            // 
-            // qa_Column1
-            // 
-            this.qa_Column1.Text = "";
-            this.qa_Column1.Width = 181;
-            // 
-            // qa_Column0
-            // 
-            this.qa_Column0.Text = "";
-            this.qa_Column0.Width = 20;
             // 
             // panel1
             // 
