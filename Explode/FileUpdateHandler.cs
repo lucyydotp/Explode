@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Explode
 {
@@ -17,7 +18,8 @@ namespace Explode
         {
             int index = 0;
             //clear directory listing, disable listview renders, update directory in path textbox, and reset the listview images
-            target.Invoke(new Action(() => {
+            target.Invoke(new Action(() =>
+            {
                 target.lstFiles.Items.Clear();
                 target.lstFiles.BeginUpdate();
                 target.txtCurrentDirectory.Text = target.CurrentDirectory;
@@ -42,8 +44,9 @@ namespace Explode
 
             foreach (string item in paths)
             {
+                Debug.WriteLine("Parsing file '" + item + "'");
                 //Grab the icon associated with the filetype/directory and add it to the directory image list. Then add the related item to the file listing
-                
+
                 //if its a file, get it's extension, otherwise use a character that cannot be in file names to represent directories.
                 if (File.Exists(item)) ext = new FileInfo(item).Extension;
                 else ext = "|";
@@ -52,22 +55,33 @@ namespace Explode
                 pos = fileTypes.IndexOf(ext);
 
                 //if the extension isnt on the list, set the pos, add it, then try to add the icon to the image list
-                if (pos == -1) {
+                if (pos == -1)
+                {
                     pos = icons.Images.Count;
                     fileTypes.Add(ext);
-                    try {
+                    try
+                    {
                         icons.Images.Add(iconCache[ext]);
-                    } catch (KeyNotFoundException) {
+                    }
+                    catch (KeyNotFoundException)
+                    {
                         //if the icon is not in the icon cache, add it and then retry adding to the image list
-                        if (ext != "|") iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext, Etier.IconHelper.IconReader.IconSize.Small, false);
-                        else iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(Etier.IconHelper.IconReader.IconSize.Small, Etier.IconHelper.IconReader.FolderType.Closed);
+                        if (ext != "|")
+                            iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext,
+                                Etier.IconHelper.IconReader.IconSize.Small, false);
+                        else
+                            iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(
+                                Etier.IconHelper.IconReader.IconSize.Small,
+                                Etier.IconHelper.IconReader.FolderType.Closed);
 
                         icons.Images.Add(iconCache[ext]);
                     }
                 }
 
-                //finally, add the entry for the item with the pos set to the index for the relevantr icon
+                //finally, add the entry for the item with the pos set to the index for the relevant icon
                 items.Add(item.Replace(target.CurrentDirectory, ""), pos);
+
+                // start the parallel foreach here
 
                 try
                 {
@@ -122,7 +136,7 @@ namespace Explode
                 target.lstFiles.EndUpdate();
 
                 }));
-        }
+            }
 
         public static void UpdateQuickAccess(FormMain target) {
             target.Invoke(new Action(() => {
