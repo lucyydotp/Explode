@@ -53,7 +53,7 @@ namespace Explode
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(5, 32);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(790, 413);
+            this.listView1.Size = new System.Drawing.Size(1122, 523);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -72,7 +72,7 @@ namespace Explode
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1132, 560);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // panel1
@@ -81,7 +81,7 @@ namespace Explode
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(5, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(790, 21);
+            this.panel1.Size = new System.Drawing.Size(1122, 21);
             this.panel1.TabIndex = 4;
             // 
             // splitContainer1
@@ -98,7 +98,7 @@ namespace Explode
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(790, 21);
+            this.splitContainer1.Size = new System.Drawing.Size(1122, 21);
             this.splitContainer1.SplitterDistance = 26;
             this.splitContainer1.TabIndex = 4;
             // 
@@ -118,7 +118,7 @@ namespace Explode
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(760, 20);
+            this.textBox1.Size = new System.Drawing.Size(1092, 20);
             this.textBox1.TabIndex = 2;
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
@@ -126,7 +126,7 @@ namespace Explode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1132, 560);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Explode 1.0.0-beta1";
