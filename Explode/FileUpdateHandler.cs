@@ -10,6 +10,9 @@ namespace Explode
 {
     static class FileUpdateHandler
     {
+
+        private static Dictionary<string, System.Drawing.Icon> iconCache = new Dictionary<string, System.Drawing.Icon>();
+
         public static void UpdateUI(FormMain target)
         {
             int index = 0;
@@ -23,19 +26,34 @@ namespace Explode
             }));
 
             //this will ensure directories are put at the top of the list, and still have all special directories shown
-            List<string> items = new List<string>();
-            items.AddRange(Directory.GetDirectories(target.CurrentDirectory));
-            items.AddRange(Directory.GetFiles(target.CurrentDirectory));
-            items.AddRange(Directory.GetFileSystemEntries(target.CurrentDirectory).Except(items));
+            List<string> paths = new List<string>();
+            paths.AddRange(Directory.GetDirectories(target.CurrentDirectory));
+            paths.AddRange(Directory.GetFiles(target.CurrentDirectory));
+            paths.AddRange(Directory.GetFileSystemEntries(target.CurrentDirectory).Except(paths));
 
-            foreach (string item in items)
+            ListView _lv = new ListView();
+            ImageList icons = new ImageList();
+            icons.ColorDepth = ColorDepth.Depth32Bit;
+            ListView.ListViewItemCollection items = new ListView.ListViewItemCollection(_lv);
+
+            foreach (string item in paths)
             {
                 //Grab the icon associated with the filetype/directory and add it to the directory image list. Then add the related item to the file listing
-                target.Invoke(new Action(() => {
-                    if (File.Exists(item)) target.lstFiles.SmallImageList.Images.Add(Etier.IconHelper.IconReader.GetFileIcon(item, Etier.IconHelper.IconReader.IconSize.Small, false));
-                    else target.lstFiles.SmallImageList.Images.Add(Etier.IconHelper.IconReader.GetFolderIcon(Etier.IconHelper.IconReader.IconSize.Small, Etier.IconHelper.IconReader.FolderType.Closed));
-                    target.lstFiles.Items.Add(item.Replace(target.CurrentDirectory, ""), target.lstFiles.SmallImageList.Images.Count - 1);
-                }));
+
+                try {
+
+                    if (File.Exists(item)) icons.Images.Add(iconCache[new FileInfo(item).Extension]);
+                    else icons.Images.Add(iconCache["|"]); // | cannot be put into filenames, therefore it is a safe unique char for directories
+
+                } catch (KeyNotFoundException) {
+                    if (File.Exists(item)) iconCache[new FileInfo(item).Extension] = Etier.IconHelper.IconReader.GetFileIcon(item, Etier.IconHelper.IconReader.IconSize.Small, false);
+                    else iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(Etier.IconHelper.IconReader.IconSize.Small, Etier.IconHelper.IconReader.FolderType.Closed);
+
+                    if (File.Exists(item)) icons.Images.Add(iconCache[new FileInfo(item).Extension]);
+                    else icons.Images.Add(iconCache["|"]); // | cannot be put into filenames, therefore it is a safe unique char for directories
+                }
+
+                items.Add(item.Replace(target.CurrentDirectory, ""), icons.Images.Count - 1);
 
                 try
                 {
@@ -45,8 +63,7 @@ namespace Explode
                     {
                         if (column.Text != "Name")
                         {
-                            target.Invoke(new Action(() =>
-                                target.lstFiles.Items[index].SubItems.Add(column.GetInfo(handle))));
+                            items[index].SubItems.Add(column.GetInfo(handle));
                         }
                     }
 
@@ -55,11 +72,11 @@ namespace Explode
                 // this happens if it's a directory or can't be accessed
                 catch (UnauthorizedAccessException e)
                 {
-                    int length = 0;
-                    target.Invoke(new Action(() => length = target.lstFiles.Items[index].SubItems.Count));
+                    int length = items[index].SubItems.Count;
+
                     for (int x = 1; x == length; x++)
                     {
-                        target.Invoke(new Action(() => target.lstFiles.Items[index].SubItems.Add("")));
+                        items[index].SubItems.Add("");
                     }
                 }
                 // this means that it's trying to process the name column, which we can ignore
@@ -78,6 +95,14 @@ namespace Explode
 
             target.Invoke(new Action(() => {
                 //TODO: These should be decided by the plugin adding the column.
+                while (items.Count > 0) {
+                    ListViewItem k = items[0];
+                    items.RemoveAt(0);
+                    target.lstFiles.Items.Add(k);
+                }
+                target.lstFiles.Items.AddRange(items);
+                target.lstFiles.SmallImageList = icons;
+
                 target.lstFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                 target.lstFiles.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.HeaderSize);
                 target.lstFiles.EndUpdate();
