@@ -23,6 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.btnGoUp = new System.Windows.Forms.Button();
             this.txtCurrentDirectory = new System.Windows.Forms.TextBox();
             this.btnForward = new System.Windows.Forms.Button();
@@ -34,11 +35,26 @@
             this.lstFiles = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button2 = new System.Windows.Forms.Button();
+            this.ctxtSingleRightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmiFileOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFileCut = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFileCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFileRename = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmiFileDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxtMultiRightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxtBackRightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmiFilePaste = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.spltViewers)).BeginInit();
             this.spltViewers.Panel1.SuspendLayout();
             this.spltViewers.Panel2.SuspendLayout();
             this.spltViewers.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.ctxtSingleRightClick.SuspendLayout();
+            this.ctxtMultiRightClick.SuspendLayout();
+            this.ctxtBackRightClick.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnGoUp
@@ -148,13 +164,18 @@
             // 
             this.lstFiles.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstFiles.FullRowSelect = true;
+            this.lstFiles.LabelEdit = true;
             this.lstFiles.Location = new System.Drawing.Point(0, 0);
             this.lstFiles.Name = "lstFiles";
             this.lstFiles.Size = new System.Drawing.Size(1080, 674);
             this.lstFiles.TabIndex = 0;
             this.lstFiles.UseCompatibleStateImageBehavior = false;
             this.lstFiles.View = System.Windows.Forms.View.Details;
+            this.lstFiles.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.EndRenameEntry);
+            this.lstFiles.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.StartRenameEntry);
             this.lstFiles.ItemActivate += new System.EventHandler(this.lstFiles_ItemActivate);
+            this.lstFiles.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lstFiles_MouseUp);
             // 
             // panel1
             // 
@@ -186,6 +207,95 @@
             this.button2.UseVisualStyleBackColor = false;
             this.button2.Click += new System.EventHandler(this.Refresh);
             // 
+            // ctxtSingleRightClick
+            // 
+            this.ctxtSingleRightClick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmiFileOpen,
+            this.cmiFileCut,
+            this.cmiFileCopy,
+            this.cmiFileRename,
+            this.cmiFileDelete});
+            this.ctxtSingleRightClick.Name = "ctxtFileRightClick";
+            this.ctxtSingleRightClick.Size = new System.Drawing.Size(118, 114);
+            // 
+            // cmiFileOpen
+            // 
+            this.cmiFileOpen.Name = "cmiFileOpen";
+            this.cmiFileOpen.Size = new System.Drawing.Size(117, 22);
+            this.cmiFileOpen.Text = "Open";
+            this.cmiFileOpen.Click += new System.EventHandler(this.cmiFileOpen_Click);
+            // 
+            // cmiFileCut
+            // 
+            this.cmiFileCut.Name = "cmiFileCut";
+            this.cmiFileCut.Size = new System.Drawing.Size(117, 22);
+            this.cmiFileCut.Text = "Cut";
+            this.cmiFileCut.Click += new System.EventHandler(this.cmiFileCut_Click);
+            // 
+            // cmiFileCopy
+            // 
+            this.cmiFileCopy.Name = "cmiFileCopy";
+            this.cmiFileCopy.Size = new System.Drawing.Size(117, 22);
+            this.cmiFileCopy.Text = "Copy";
+            this.cmiFileCopy.Click += new System.EventHandler(this.cmiFileCopy_Click);
+            // 
+            // cmiFileRename
+            // 
+            this.cmiFileRename.Name = "cmiFileRename";
+            this.cmiFileRename.Size = new System.Drawing.Size(117, 22);
+            this.cmiFileRename.Text = "Rename";
+            this.cmiFileRename.Click += new System.EventHandler(this.cmiFileRename_Click);
+            // 
+            // cmiFileDelete
+            // 
+            this.cmiFileDelete.Name = "cmiFileDelete";
+            this.cmiFileDelete.Size = new System.Drawing.Size(117, 22);
+            this.cmiFileDelete.Text = "Delete";
+            this.cmiFileDelete.Click += new System.EventHandler(this.cmiFileDelete_Click);
+            // 
+            // ctxtMultiRightClick
+            // 
+            this.ctxtMultiRightClick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cutToolStripMenuItem,
+            this.copyToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.ctxtMultiRightClick.Name = "ctxtMultiRightClick";
+            this.ctxtMultiRightClick.Size = new System.Drawing.Size(108, 70);
+            // 
+            // cutToolStripMenuItem
+            // 
+            this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.cutToolStripMenuItem.Text = "Cut";
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.cmiFileCut_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.cmiFileDelete_Click);
+            // 
+            // ctxtBackRightClick
+            // 
+            this.ctxtBackRightClick.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmiFilePaste});
+            this.ctxtBackRightClick.Name = "ctxtBackRightClick";
+            this.ctxtBackRightClick.Size = new System.Drawing.Size(103, 26);
+            // 
+            // cmiFilePaste
+            // 
+            this.cmiFilePaste.Name = "cmiFilePaste";
+            this.cmiFilePaste.Size = new System.Drawing.Size(102, 22);
+            this.cmiFilePaste.Text = "Paste";
+            this.cmiFilePaste.Click += new System.EventHandler(this.cmiFilePaste_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,6 +313,9 @@
             this.spltViewers.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.ctxtSingleRightClick.ResumeLayout(false);
+            this.ctxtMultiRightClick.ResumeLayout(false);
+            this.ctxtBackRightClick.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -219,5 +332,17 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button2;
         public System.Windows.Forms.ListView lstQuickAccess;
+        private System.Windows.Forms.ContextMenuStrip ctxtSingleRightClick;
+        private System.Windows.Forms.ToolStripMenuItem cmiFileOpen;
+        private System.Windows.Forms.ToolStripMenuItem cmiFileCut;
+        private System.Windows.Forms.ToolStripMenuItem cmiFileCopy;
+        private System.Windows.Forms.ToolStripMenuItem cmiFileRename;
+        private System.Windows.Forms.ToolStripMenuItem cmiFileDelete;
+        private System.Windows.Forms.ContextMenuStrip ctxtMultiRightClick;
+        private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip ctxtBackRightClick;
+        private System.Windows.Forms.ToolStripMenuItem cmiFilePaste;
     }
 }
