@@ -65,16 +65,21 @@ namespace Explode
                     }
                     catch (KeyNotFoundException)
                     {
-                        //if the icon is not in the icon cache, add it and then retry adding to the image list
-                        if (ext != "|")
-                            iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext,
-                                Etier.IconHelper.IconReader.IconSize.Small, false);
-                        else
-                            iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(
-                                Etier.IconHelper.IconReader.IconSize.Small,
-                                Etier.IconHelper.IconReader.FolderType.Closed);
+                        if (Utilities.IconCacher.cachedOnLaunch) {
+                            icons.Images.Add(iconCache[".|"]);
+                        } else {
+                            //if the icon is not in the icon cache, add it and then retry adding to the image list
+                            if (ext != "|")
+                                iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext,
+                                    Etier.IconHelper.IconReader.IconSize.Small, false);
+                            else
+                                iconCache["|"] = Etier.IconHelper.IconReader.GetFolderIcon(
+                                    Etier.IconHelper.IconReader.IconSize.Small,
+                                    Etier.IconHelper.IconReader.FolderType.Closed);
 
-                        icons.Images.Add(iconCache[ext]);
+                            icons.Images.Add(iconCache[ext]);
+                        }
+                        
                     }
                 }
 
