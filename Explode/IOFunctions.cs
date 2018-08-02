@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Microsoft.VisualBasic.FileIO;
 using ExplodePluginBase;
 using System.Diagnostics;
 
@@ -63,7 +64,7 @@ namespace Explode {
         public static void DeleteEntries(FormMain form, ListView.SelectedListViewItemCollection items) {
             foreach (ListViewItem k in items) {
                 if (File.Exists(form.CurrentDirectory + k.Text)) File.Delete(form.CurrentDirectory + k.Text);
-                else Directory.Delete(form.CurrentDirectory + k.Text);
+                else FileSystem.DeleteDirectory(form.CurrentDirectory + k.Text, DeleteDirectoryOption.DeleteAllContents);
                 form.lstFiles.Items.Remove(k);
             }
         }
@@ -79,7 +80,10 @@ namespace Explode {
                 }
             }
 
-            Debug.WriteLine("Paste files cutted: " + cut);
+            List<string> sources = new List<string>();
+            foreach (string k in Clipboard.GetFileDropList()) sources.Add(k);
+
+            FormMoveFiles frm = new FormMoveFiles(form, sources.ToArray(), form.CurrentDirectory, cut);
 
             //TODO: actually do stuff with the files
             //need a some way to display progress
