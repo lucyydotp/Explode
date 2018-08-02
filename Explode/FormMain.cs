@@ -11,6 +11,7 @@ using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System.Threading;
 using ExplodePluginBase;
+using System.Diagnostics;
 
 namespace Explode {
     public partial class FormMain : Form {
@@ -33,7 +34,7 @@ namespace Explode {
             
         }        
 
-        // this property controls directory changes and input validation
+        // this properly controls directory changes and input validation
         public string CurrentDirectory {
             get { return directory; }
             set {
@@ -76,78 +77,6 @@ namespace Explode {
             }
         }
 
-        #region File Operations
-
-        private void OpenEntry(ListViewItem item) {
-            if (Directory.Exists(CurrentDirectory + item.Text)) {
-                CurrentDirectory += item.Text;
-            } else {
-                // execute the file using plugins, if defined
-                FileStream file = File.OpenRead(CurrentDirectory + item.Text);
-                foreach (IFileTypeBase type in manager.FileTypes) {
-                    if (type.CheckFileType(file) != null) {
-                        if (type.ExecuteFile(file) == 0) {
-                            System.Diagnostics.Process.Start(file.Name);
-                        }
-                        file.Close();
-                        break;
-                    }
-                }
-
-                if (file.CanRead) {
-                    // this happens if a file type has no plugin to control it
-                    System.Diagnostics.Process.Start(file.Name);
-                    file.Close();
-                }
-            }
-        }
-
-        private void StartRenameEntry(object sender, LabelEditEventArgs e) {
-            _labelOld = ((ListView)sender).Items[e.Item].Text;
-        }
-
-        private void EndRenameEntry(object sender, LabelEditEventArgs e) {
-            if (e.Label != null) {
-                if (!File.Exists(CurrentDirectory + e.Label)) {
-                    File.Move(CurrentDirectory + _labelOld, CurrentDirectory + e.Label);
-                } else {
-                    e.CancelEdit = true;
-                    MessageBox.Show("A file with that name already exists!", "File Already Exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void CutEntries(ListView.SelectedListViewItemCollection items) {
-            System.Collections.Specialized.StringCollection paths = new System.Collections.Specialized.StringCollection();
-            foreach (ListViewItem k in items) paths.Add(CurrentDirectory + k.Text);
-
-            byte[] moveEffect = { 2, 0, 0, 0 };
-            MemoryStream dropEffect = new MemoryStream();
-            dropEffect.Write(moveEffect, 0, moveEffect.Length);
-
-            DataObject dataObj = new DataObject("Preferred DropEffect", dropEffect);
-            dataObj.SetFileDropList(paths);
-
-            Clipboard.Clear();
-            Clipboard.SetDataObject(dataObj, true);
-        }
-
-        private void CopyEntries(ListView.SelectedListViewItemCollection items) {
-            System.Collections.Specialized.StringCollection paths = new System.Collections.Specialized.StringCollection();
-            foreach (ListViewItem k in items) paths.Add(CurrentDirectory + k.Text);
-            Clipboard.SetFileDropList(paths);
-        }
-
-        private void DeleteEntries(ListView.SelectedListViewItemCollection items) {
-            foreach(ListViewItem k in items) {
-                if (File.Exists(CurrentDirectory + k.Text)) File.Delete(CurrentDirectory + k.Text);
-                else Directory.Delete(CurrentDirectory + k.Text);
-                lstFiles.Items.Remove(k);
-            }
-        }
-
-        #endregion
-
         #region Form Events
 
         private void FormMain_Load(object sender, EventArgs e) {
@@ -166,7 +95,7 @@ namespace Explode {
 
         private void lstFiles_ItemActivate(object sender, EventArgs e) {
             ListViewItem selectedItem = lstFiles.SelectedItems[0];
-            OpenEntry(selectedItem);
+            IOFunctions.OpenEntry(this, selectedItem);
         }
 
         // called when back button pressed
@@ -220,6 +149,21 @@ namespace Explode {
             }
         }
 
+        private void StartRenameEntry(object sender, LabelEditEventArgs e) {
+            _labelOld = ((ListView)sender).Items[e.Item].Text;
+        }
+
+        private void EndRenameEntry(object sender, LabelEditEventArgs e) {
+            if (e.Label != null) {
+                if (!File.Exists(CurrentDirectory + e.Label)) {
+                    File.Move(CurrentDirectory + _labelOld, CurrentDirectory + e.Label);
+                } else {
+                    e.CancelEdit = true;
+                    MessageBox.Show("A file with that name already exists!", "File Already Exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         #endregion
 
         #region Context Menu Events
@@ -227,7 +171,7 @@ namespace Explode {
         //TODO: These should be added from plugins (these specific ones from the default plugin)
         private void cmiFileOpen_Click(object sender, EventArgs e) {
             ListViewItem selectedItem = lstFiles.SelectedItems[0];
-            OpenEntry(selectedItem);
+            IOFunctions.OpenEntry(this, selectedItem);
         }
 
         private void cmiFileRename_Click(object sender, EventArgs e) {
@@ -236,32 +180,22 @@ namespace Explode {
         }
 
         private void cmiFileDelete_Click(object sender, EventArgs e) {
-            DeleteEntries(lstFiles.SelectedItems);
+            IOFunctions.DeleteEntries(this, lstFiles.SelectedItems);
         }
 
         private void cmiFileCut_Click(object sender, EventArgs e) {
-            CutEntries(lstFiles.SelectedItems);
+            IOFunctions.CutEntries(this, lstFiles.SelectedItems);
         }
 
         private void cmiFileCopy_Click(object sender, EventArgs e) {
-            CopyEntries(lstFiles.SelectedItems);
+            IOFunctions.CopyEntries(this, lstFiles.SelectedItems);
         }
 
         private void cmiFilePaste_Click(object sender, EventArgs e) {
-            byte[] moveType = new byte[4];
-            bool cut = false;
-
-            //check if the dropeffect specifies to cut the files or not
-            if ((Clipboard.GetData("Preferred DropEffect") as MemoryStream) != null) {
-                if ((Clipboard.GetData("Preferred DropEffect") as MemoryStream).Read(moveType, 0, 4) == 4 && moveType.SequenceEqual(new byte[] { 2, 0, 0, 0 })) {
-                    cut = true;
-                }
-            }
-
-            //TODO: actually do stuff with the files
-            //need a some way to display progress
-            //this should also be asynchronus
+            IOFunctions.PasteFromClipboard(this);
         }
+
+
         #endregion
     }
 }
