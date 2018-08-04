@@ -65,9 +65,12 @@ namespace Explode
                     }
                     catch (KeyNotFoundException)
                     {
-                        if (Utilities.IconCacher.cachedOnLaunch) {
+                        if (Utilities.IconCacher.cachedOnLaunch)
+                        {
                             icons.Images.Add(iconCache[".|"]);
-                        } else {
+                        }
+                        else
+                        {
                             //if the icon is not in the icon cache, add it and then retry adding to the image list
                             if (ext != "|")
                                 iconCache[ext] = Etier.IconHelper.IconReader.GetFileIcon(ext,
@@ -79,7 +82,7 @@ namespace Explode
 
                             icons.Images.Add(iconCache[ext]);
                         }
-                        
+
                     }
                 }
 
@@ -117,22 +120,33 @@ namespace Explode
                 {
                     ;
                 }
-                // I know that this is bad practice but let's do it anyway
-                catch (Exception e)
+
+                // If the file can't be accessed
+                catch (System.IO.IOException)
                 {
                     ;
                 }
 
+                // I know that this is bad practice but let's do it anyway
+                /*
+                catch (Exception e)
+                {
+                    ;
+                }
+                */
                 index++;
             }
 
-            target.Invoke(new Action(() => {
+            target.Invoke(new Action(() =>
+            {
                 //TODO: These should be decided by the plugin adding the column.
-                while (items.Count > 0) {
+                while (items.Count > 0)
+                {
                     ListViewItem k = items[0];
                     items.RemoveAt(0);
                     target.lstFiles.Items.Add(k);
                 }
+
                 target.lstFiles.Items.AddRange(items);
                 target.lstFiles.SmallImageList = icons;
 
@@ -140,8 +154,12 @@ namespace Explode
                 target.lstFiles.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.HeaderSize);
                 target.lstFiles.EndUpdate();
 
-                }));
-            }
+            }));
+            Debug.WriteLine("Finished updating");
+
+            // The update is now finished so update the flag to show this
+            GlobalVars.isUpdating = false;
+        }
 
         public static void UpdateQuickAccess(FormMain target) {
             target.Invoke(new Action(() => {

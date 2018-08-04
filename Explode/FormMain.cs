@@ -14,12 +14,14 @@ using ExplodePluginBase;
 using System.Diagnostics;
 
 namespace Explode {
-    public partial class FormMain : Form {
-        
+    public partial class FormMain : Form
+    {
+
 
         // Creates a new plugin manager system and loads plugins
         public PluginManager manager;
         private string directory;
+        private Thread execThread;
 
         //history stuff
         public List<string> pathHistory = new List<string>();
@@ -28,108 +30,152 @@ namespace Explode {
 
         private string _labelOld;
 
-        public FormMain() {
+        public FormMain()
+        {
             InitializeComponent();
             manager = new PluginManager(Directory.GetCurrentDirectory(), lstFiles);
-            
-        }        
+
+        }
 
         // this properly controls directory changes and input validation
-        public string CurrentDirectory {
+        public string CurrentDirectory
+        {
             get { return directory; }
-            set {
-                // makes sure the new folder actually exists
-                if (Directory.Exists(value)) {
-                    //verify the user has sufficient access to the directory
-                    //this will trigger on certain special pointer directories (ie. legacy symlinks like Application Data)
-                    try {
-                        Directory.GetFileSystemEntries(value);
-                    } catch (UnauthorizedAccessException) {
-                        MessageBox.Show("You don't have permission to access this directory.", "Unauthorized Access", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+            set
+            {
+                // makes sure it's not already being updated
+                if (GlobalVars.isUpdating == false)
+                {
+                    // shows that an update is in process
+                    GlobalVars.isUpdating = true;
+
+                    // makes sure the new folder actually exists
+                    if (Directory.Exists(value))
+                    {
+                        //verify the user has sufficient access to the directory
+                        //this will trigger on certain special pointer directories (ie. legacy symlinks like Application Data)
+                        try
+                        {
+                            Directory.GetFileSystemEntries(value);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            MessageBox.Show("You don't have permission to access this directory.",
+                                "Unauthorized Access", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        // if it doesn't end with a /, add one
+                        if (value.Replace("\\", "/").EndsWith("/") == false)
+                        {
+                            directory = value.Replace("\\", "/") + "/";
+                        }
+                        else
+                        {
+                            directory = value.Replace("\\", "/");
+                        }
+
+                        execThread = new Thread(() =>
+                        {
+                            Thread.CurrentThread.IsBackground = true;
+                            FileUpdateHandler.UpdateUI(this);
+                        });
+                        execThread.Start();
+
+                        if (updateHistory)
+                        {
+                            historyPointer++;
+                            if (historyPointer <= pathHistory.Count() - 1)
+                                pathHistory.RemoveRange(historyPointer, pathHistory.Count() - historyPointer);
+                            pathHistory.Add(directory);
+
+                        }
+
+                        if (historyPointer == 0) btnBack.Enabled = false;
+                        else btnBack.Enabled = true;
+
+                        if (historyPointer == pathHistory.Count() - 1) btnForward.Enabled = false;
+                        else btnForward.Enabled = true;
                     }
-
-                    // if it doesn't end with a /, add one
-                    if (value.Replace("\\", "/").EndsWith("/") == false) {
-                        directory = value.Replace("\\", "/") + "/";
-                    } else {
-                        directory = value.Replace("\\", "/");
-                    }
-
-                    new Thread(() => {
-                        Thread.CurrentThread.IsBackground = true;
-                        FileUpdateHandler.UpdateUI(this);
-                    }).Start();
-
-                    if (updateHistory) {
-                        historyPointer++;
-                        if (historyPointer <= pathHistory.Count() - 1) pathHistory.RemoveRange(historyPointer, pathHistory.Count() - historyPointer);
-                        pathHistory.Add(directory);
-                        
-                    }
-
-                    if (historyPointer == 0) btnBack.Enabled = false;
-                    else btnBack.Enabled = true;
-
-                    if (historyPointer == pathHistory.Count() - 1) btnForward.Enabled = false;
-                    else btnForward.Enabled = true;
                 }
             }
         }
 
         #region Form Events
 
-        private void FormMain_Load(object sender, EventArgs e) {
-            new Thread(() => {
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            new Thread(() =>
+            {
                 Thread.CurrentThread.IsBackground = true;
                 FileUpdateHandler.UpdateQuickAccess(this);
             }).Start();
             CurrentDirectory = "C:/Users";
         }
 
-        private void txtCurrentDirectory_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar == (char)Keys.Enter) {
+        private void txtCurrentDirectory_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char) Keys.Enter)
+            {
                 CurrentDirectory = txtCurrentDirectory.Text;
             }
         }
 
-        private void lstFiles_ItemActivate(object sender, EventArgs e) {
+        private void lstFiles_ItemActivate(object sender, EventArgs e)
+        {
             ListViewItem selectedItem = lstFiles.SelectedItems[0];
             IOFunctions.OpenEntry(this, selectedItem);
         }
 
         // called when back button pressed
-        private void GoBack(object sender, EventArgs e) {
-            updateHistory = false;
-            historyPointer--;
-            CurrentDirectory = pathHistory[historyPointer];
-            updateHistory = true;
+        private void GoBack(object sender, EventArgs e)
+        {
+            if (GlobalVars.isUpdating == false)
+            {
+                updateHistory = false;
+                historyPointer--;
+                CurrentDirectory = pathHistory[historyPointer];
+                updateHistory = true;
+            }
         }
 
-        private void GoForward(object sender, EventArgs e) {
-            updateHistory = false;
-            historyPointer++;
-            CurrentDirectory = pathHistory[historyPointer];
-            updateHistory = true;
+
+        private void GoForward(object sender, EventArgs e)
+        {
+            if (GlobalVars.isUpdating == false)
+            {
+                updateHistory = false;
+                historyPointer++;
+                CurrentDirectory = pathHistory[historyPointer];
+                updateHistory = true;
+            }
         }
 
-        private void Refresh(object sender, EventArgs e) {
-            new Thread(() => {
-                Thread.CurrentThread.IsBackground = true;
-                FileUpdateHandler.UpdateUI(this);
-            }).Start();
+        private void Refresh(object sender, EventArgs e)
+        {
+            if (GlobalVars.isUpdating == false)
+            {
+                new Thread(() =>
+                {
+                    Thread.CurrentThread.IsBackground = true;
+                    FileUpdateHandler.UpdateUI(this);
+                }).Start();
+            }
         }
 
         private void btnGoUp_Click(object sender, EventArgs e)
         {
-            try
+            if (GlobalVars.isUpdating == false)
             {
-                CurrentDirectory = new DirectoryInfo(CurrentDirectory).Parent.FullName;
-            }
-            catch (NullReferenceException)
-            {
-                // probably means that we're at the root dir, so we can do nothing
-                ;
+                try
+                {
+                    CurrentDirectory = new DirectoryInfo(CurrentDirectory).Parent.FullName;
+                }
+                catch (NullReferenceException)
+                {
+                    // probably means that we're at the root dir, so we can do nothing
+                    ;
+                }
             }
         }
 
@@ -197,6 +243,12 @@ namespace Explode {
 
 
         #endregion
+    }
+
+    // this is used to see if the update thread is running
+    public static class GlobalVars
+    {
+        public static bool isUpdating = false;
     }
 }
 
