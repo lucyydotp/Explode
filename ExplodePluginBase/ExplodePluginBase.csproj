@@ -40,5 +40,8 @@
   <ItemGroup>
     <Compile Include="PluginBase.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -33,7 +33,7 @@ namespace Explode {
         public FormMain()
         {
             InitializeComponent();
-            manager = new PluginManager(Directory.GetCurrentDirectory(), lstFiles);
+            manager = new PluginManager(Directory.GetCurrentDirectory(), lstFiles, ctxtSingleRightClick);
 
         }
 

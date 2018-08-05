@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using Explode;
 using ExplodePluginBase;
 
@@ -14,6 +16,11 @@ namespace Explode
 {
     public class BuiltinTxt : IFileTypeBase
     {
+        public string FriendlyName { get { return "Text File"; }}
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
+
         public string CheckFileType(FileStream s)
         {
             string data = null;
@@ -31,6 +38,10 @@ namespace Explode
 
     public class BuiltinLnk : IFileTypeBase
     {
+        public string FriendlyName { get { return "Shortcut"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream s)
         {
             string data = null;
@@ -49,6 +60,10 @@ namespace Explode
 
     public class BuiltinExe : IFileTypeBase
     {
+        public string FriendlyName { get { return "Windows PE Files"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream s)
         {
             string data = null;
@@ -80,6 +95,25 @@ namespace Explode
 
     public class BuiltinName : IPluginBase
     {
+        public string Author
+        {
+            get { return "Explode"; }
+        }
+        public double Version
+        {
+            get { return 1.00; }
+        }
+        public string Website
+        {
+            get { return "https://github.com/SamPoulton/Explode"; }
+        }
+        public ColumnHeaderAutoResizeStyle ColumnWidth
+        {
+            get
+            {
+                return ColumnHeaderAutoResizeStyle.ColumnContent;
+            }
+        }
         public string FriendlyName
         {
             get { return "Name"; }
@@ -93,6 +127,25 @@ namespace Explode
 
     public class BuiltinSize : IPluginBase
     {
+        public string Author
+        {
+            get { return "Explode"; }
+        }
+        public double Version
+        {
+            get { return 1.00; }
+        }
+        public string Website
+        {
+            get { return "https://github.com/SamPoulton/Explode"; }
+        }
+        public ColumnHeaderAutoResizeStyle ColumnWidth
+        {
+            get
+            {
+                return ColumnHeaderAutoResizeStyle.ColumnContent;
+            }
+        }
         public string FriendlyName
         {
             get { return "Size"; }
@@ -113,6 +166,25 @@ namespace Explode
 
     public class BuiltinFormat : IPluginBase
     {
+        public string Author
+        {
+            get { return "Explode"; }
+        }
+        public double Version
+        {
+            get { return 1.00; }
+        }
+        public string Website
+        {
+            get { return "https://github.com/SamPoulton/Explode"; }
+        }
+        public ColumnHeaderAutoResizeStyle ColumnWidth
+        {
+            get
+            {
+                return ColumnHeaderAutoResizeStyle.ColumnContent;
+            }
+        }
         public string FriendlyName
         {
             get { return "Format"; }
@@ -138,6 +210,25 @@ namespace Explode
 
     public class BuiltinExtension : IPluginBase
     {
+        public string Author
+        {
+            get { return "Explode"; }
+        }
+        public double Version
+        {
+            get { return 1.00; }
+        }
+        public string Website
+        {
+            get { return "https://github.com/SamPoulton/Explode"; }
+        }
+        public ColumnHeaderAutoResizeStyle ColumnWidth
+        {
+            get
+            {
+                return ColumnHeaderAutoResizeStyle.HeaderSize;
+            }
+        }
         public string FriendlyName
         {
             get { return "Extension"; }
@@ -146,6 +237,22 @@ namespace Explode
         public string ColumnData(FileStream s)
         {
             return Path.GetExtension(s.Name);
+        }
+    }
+
+    // Test right-click menu items
+
+    public class BuiltinTestItem : IMenuItemBase
+    {
+        public string FriendlyName { get { return "Test Plugin"; } }
+        public string ActionName { get { return "Test"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
+
+        public void ProcessFile(FileStream stream)
+        {
+            Debug.WriteLine("Item '" + stream.Name + "' tested");
         }
     }
 }

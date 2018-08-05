@@ -28,8 +28,9 @@ namespace Explode
         // contains instances of plugins
         // there isn't one for column plugins because they're added straight into the ListView
         private List<IFileTypeBase> _fileTypes = new List<IFileTypeBase>();
+        private List<IMenuItemBase> _menuTypes = new List<IMenuItemBase>();
 
-        public PluginManager(string directory, ListView listView)
+        public PluginManager(string directory, ListView listView, ContextMenuStrip menuStrip)
         {
             // plugin file names in here
             string[] pluginFileNames = null;
@@ -138,6 +139,48 @@ namespace Explode
             _fileTypes.Add(new BuiltinExe());
 
             #endregion
+
+            #region Right-click menu plugins
+
+            // contains Type objects of all the plugins
+            ICollection<Type> menuPluginTypes = new List<Type>();
+            foreach (Assembly assembly in assemblies)
+            {
+                if (assembly != null)
+                {
+                    Type[] types = assembly.GetTypes();
+                    foreach (Type type in types)
+                    {
+                        if (type.IsInterface || type.IsAbstract)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Type _interface = type.GetInterface("IMenuItemBase");
+                            if (_interface != null)
+                            {
+                                if (_interface.Name == "IMenuItemBase")
+                                {
+                                    menuPluginTypes.Add(type);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //TODO: remove this line in the build, this is for testing
+            menuPluginTypes.Add(typeof(BuiltinTestItem));
+
+            // creates an instance of each type
+            foreach (Type type in menuPluginTypes)
+            {
+                IMenuItemBase plugin = (IMenuItemBase)Activator.CreateInstance(type);
+                menuStrip.Items.Add(new ExplodeMenuStripItem(plugin, listView));
+            }
+
+            #endregion
         }
 
         // this makes sure that the plugin list can't be edited
@@ -151,7 +194,7 @@ namespace Explode
     // this class is used to pair plugins with column headers 
     public class ExplodeColumn : ColumnHeader
     {
-        private IPluginBase handler;
+        public IPluginBase handler;
         public ExplodeColumn(IPluginBase handler)
         {
             this.handler = handler;
@@ -161,6 +204,26 @@ namespace Explode
         public string GetInfo(FileStream s)
         {
             return handler.ColumnData(s);
+        }
+    }
+
+    public class ExplodeMenuStripItem : ToolStripItem
+    {
+        public IMenuItemBase handler;
+        private ListView listview;
+
+        public ExplodeMenuStripItem(IMenuItemBase handler, ListView listView)
+        {
+            this.handler = handler;
+            Text = this.handler.ActionName;
+            Size = new System.Drawing.Size(117, 22);
+            Click += ClickHandler;
+            listview = listView;
+        }
+
+        public void ClickHandler(object sender, EventArgs e)
+        {
+            handler.ProcessFile(File.Open(((FormMain)listview.Parent.Parent.Parent).CurrentDirectory + listview.SelectedItems[0].Text, FileMode.Open));
         }
     }
 }

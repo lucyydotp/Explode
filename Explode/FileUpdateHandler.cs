@@ -139,7 +139,6 @@ namespace Explode
 
             target.Invoke(new Action(() =>
             {
-                //TODO: These should be decided by the plugin adding the column.
                 while (items.Count > 0)
                 {
                     ListViewItem k = items[0];
@@ -150,8 +149,10 @@ namespace Explode
                 target.lstFiles.Items.AddRange(items);
                 target.lstFiles.SmallImageList = icons;
 
-                target.lstFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                target.lstFiles.AutoResizeColumn(3, ColumnHeaderAutoResizeStyle.HeaderSize);
+                foreach (ExplodeColumn column in target.lstFiles.Columns)
+                {
+                    column.AutoResize(column.handler.ColumnWidth);
+                }
                 target.lstFiles.EndUpdate();
 
             }));
