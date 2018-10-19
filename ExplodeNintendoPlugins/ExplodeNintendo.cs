@@ -15,6 +15,10 @@ namespace ExplodeNintendoPlugins
 {
     public class BuiltinYaz0 : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo Yaz0"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[4];
@@ -39,6 +43,10 @@ namespace ExplodeNintendoPlugins
 
     public class BuiltinSarc : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo SARC"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[4];
@@ -63,6 +71,10 @@ namespace ExplodeNintendoPlugins
 
     public class BuiltinByml : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo BYML"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[2];
@@ -91,6 +103,10 @@ namespace ExplodeNintendoPlugins
 
     public class BuiltinBfres : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo BFRES"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[4];
@@ -115,6 +131,10 @@ namespace ExplodeNintendoPlugins
 
     public class BuiltinBars : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo BARS"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[4];
@@ -139,6 +159,10 @@ namespace ExplodeNintendoPlugins
 
     public class BuiltinBfstm : IFileTypeBase
     {
+        public string FriendlyName { get { return "Nintendo BFSTM"; } }
+        public string Author { get { return "Explode"; } }
+        public double Version { get { return 1.00; } }
+        public string Website { get { return "https://github.com/SamPoulton/Explode"; } }
         public string CheckFileType(FileStream file)
         {
             char[] buffer = new char[4];
