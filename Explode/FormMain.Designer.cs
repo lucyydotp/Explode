@@ -118,6 +118,7 @@
             // 
             this.spltViewers.BackColor = System.Drawing.SystemColors.Menu;
             this.spltViewers.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spltViewers.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.spltViewers.Location = new System.Drawing.Point(0, 36);
             this.spltViewers.Margin = new System.Windows.Forms.Padding(0);
             this.spltViewers.Name = "spltViewers";
