@@ -16,8 +16,6 @@ using System.Diagnostics;
 namespace Explode {
     public partial class FormMain : Form
     {
-
-
         // Creates a new plugin manager system and loads plugins
         public PluginManager manager;
         private string directory;

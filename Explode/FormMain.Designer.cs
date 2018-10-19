@@ -305,7 +305,7 @@
             this.Controls.Add(this.spltViewers);
             this.Controls.Add(this.panel1);
             this.Name = "FormMain";
-            this.Text = "FormMain";
+            this.Text = "Explode";
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.spltViewers.Panel1.ResumeLayout(false);
             this.spltViewers.Panel2.ResumeLayout(false);

@@ -176,8 +176,11 @@ namespace Explode
             // creates an instance of each type
             foreach (Type type in menuPluginTypes)
             {
-                IMenuItemBase plugin = (IMenuItemBase)Activator.CreateInstance(type);
-                menuStrip.Items.Add(new ExplodeMenuStripItem(plugin, listView));
+                ExplodeMenuStripItem plugin = new ExplodeMenuStripItem((IMenuItemBase)Activator.CreateInstance(type), listView);
+                plugin.Text = plugin.handler.ActionName;
+                // add to menu
+                menuStrip.Items.Add(plugin);
+                menuStrip.Update();
             }
 
             #endregion
@@ -211,11 +214,10 @@ namespace Explode
     {
         public IMenuItemBase handler;
         private ListView listview;
-
         public ExplodeMenuStripItem(IMenuItemBase handler, ListView listView)
         {
             this.handler = handler;
-            Text = this.handler.ActionName;
+            Text = handler.ActionName;
             Size = new System.Drawing.Size(117, 22);
             Click += ClickHandler;
             listview = listView;

@@ -16,8 +16,10 @@ namespace Explode
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Utilities.IconCacher.CacheAllIcons(ref FileUpdateHandler.iconCache);
 
+            // start the app itself
+            StartupDialog formStartup = new StartupDialog();
+            formStartup.ShowDialog();
             // declaring like this helps with debugging
             app = new FormMain();
             Application.Run(app);
