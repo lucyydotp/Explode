@@ -60,6 +60,7 @@ namespace Explode {
                         {
                             MessageBox.Show("You don't have permission to access this directory.",
                                 "Unauthorized Access", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            GlobalVars.isUpdating = false;
                             return;
                         }
 
